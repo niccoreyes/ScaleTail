@@ -41,14 +41,18 @@ In this setup, the `tailscale-openclaw` service runs Tailscale and manages secur
 - User should be in the `docker` group for proper file permissions
 - Pre-create volume directories to avoid root-owned folders:
   ```bash
-  mkdir -p openclaw-config openclawworkspace
-  chown $USER:$USER openclaw-config openclawworkspace
+  mkdir -p openclaw-config openclaw-workspace config ts/state
+  # On Linux/Raspberry Pi OpenClaw runs as uid 1000, so set ownership:
+  sudo chown -R 1000:1000 openclaw-config openclaw-workspace config ts/state
+  # On macOS, you can use your user instead:
+  # chown $USER:$USER openclaw-config openclaw-workspace config ts/state
   ```
 - Enable MagicDNS in your Tailscale admin console for proper HTTPS access
 - Get a Tailscale auth key from https://tailscale.com/admin/settings/keys
 
 ## OpenClaw-specific Gotchas
 
+- **Security Warning**: OpenClaw is a personal agent that runs tools with elevated permissions by default. Read the [OpenClaw security guide](https://docs.openclaw.ai/gateway/security) before enabling tools or exposing it to multiple users. Run `openclaw security audit --deep` regularly.
 - **Initial Setup**: First launch requires configuring your Claude API keys or local model endpoints through OpenClaw's CLI interface
 - **Authentication**: 
   - `OPENCLAW_GATEWAY_TOKEN` is OpenClaw's internal authentication (NOT the same as Tailscale's `TS_AUTHKEY`)
@@ -375,14 +379,24 @@ docker compose exec gateway ping api.anthropic.com
 docker compose logs gateway --tail=50
 ```
 
-**Permission errors in config directories:**
+**Permission errors in config directories (EACCES: permission denied):**
 ```bash
+# Stop containers
+docker compose down
+
 # Fix permissions for OpenClaw user (uid 1000)
-sudo chown -R 1000:1000 openclaw-config openclaw-workspace
+sudo chown -R 1000:1000 openclaw-config openclaw-workspace config ts/state
+
+# Ensure all directories exist
+sudo mkdir -p openclaw-config openclaw-workspace config ts/state
 
 # Restart containers
-docker compose down && docker compose up -d
+docker compose up -d
 ```
+
+**Specific error:** `Error: EACCES: permission denied, mkdir '/home/node/.openclaw/qqbot/data'`
+- This occurs when OpenClaw (running as uid 1000) cannot create directories in volumes
+- Common on Linux/Raspberry Pi; fix involves changing volume ownership to uid 1000
 
 **Quick diagnostic command:**
 ```bash
