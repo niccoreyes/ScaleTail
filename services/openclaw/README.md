@@ -35,7 +35,11 @@ In this setup, the `tailscale-openclaw` service runs Tailscale and manages secur
 ## OpenClaw-specific Gotchas
 
 - **Initial Setup**: First launch requires configuring your Claude API keys or local model endpoints through OpenClaw's CLI interface
-- **Authentication**: Set `OPENCLAW_GATEWAY_TOKEN` for security; without it, the gateway accepts all connections (acceptable for private Tailnet usage)
+- **Authentication**: 
+  - `OPENCLAW_GATEWAY_TOKEN` is OpenClaw's internal authentication (NOT the same as Tailscale's `TS_AUTHKEY`)
+  - Generate a random token with `openssl rand -base64 32` for additional security
+  - Can be left empty for private Tailnet usage since Tailscale provides network isolation
+  - `OPENCLAW_ALLOW_INSECURE_PRIVATE_WS` should generally be left empty for security; set to "true" only for specific debugging needs
 - **Workspace Permissions**: Ensure the `openclaw-workspace` directory has proper permissions for the user running the container
 - **Claude Configuration**: `CLAUDE_AI_SESSION_KEY`, `CLAUDE_WEB_SESSION_KEY`, and `CLAUDE_WEB_COOKIE` are optional—your assistant can help you obtain them interactively
 - **MagicDNS**: Set `TS_ACCEPT_DNS=true` in the compose.yaml environment variables if you want HTTPS access via MagicDNS
