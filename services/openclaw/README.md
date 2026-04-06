@@ -49,10 +49,17 @@ In this setup, the `tailscale-openclaw` service runs Tailscale and manages secur
 
 When using MagicDNS with Tailscale Serve:
 
-1. Set `TS_ACCEPT_DNS=true` in the compose.yaml environment variables
-2. Set `TS_CERT_DOMAIN` to your desired hostname (e.g., `openclaw` for `openclaw.tailnet-name.ts.net`)
-3. The `ts-serve` config automatically routes port 443 to the OpenClaw gateway on port 18789
-4. Access your OpenClaw assistant at `https://openclaw.tailnet-name.ts.net`
+1. Enable MagicDNS in your Tailscale admin console (your tailnet's DNS settings)
+2. Set `TS_CERT_DOMAIN=openclaw` in `.env` (or your preferred hostname)
+3. Set `TS_ACCEPT_DNS=true` in `.env` to enable MagicDNS
+4. The `ts-serve` config automatically routes HTTPS port 443 to the OpenClaw gateway on port 18789
+5. Access your OpenClaw assistant at `https://openclaw.tailnet-name.ts.net`
+
+**Note:** If you encounter connection refused issues, ensure:
+- MagicDNS is enabled in your Tailscale admin console
+- HTTPS is enabled for your tailnet (required for Tailscale Serve)
+- The Tailscale container has a valid Tailnet IP and is healthy (check with `docker compose ps`)
+- The OpenClaw gateway container is healthy and running on port 18789
 
 ## Port Exposure
 
@@ -73,6 +80,33 @@ ports:
 
 This allows local network access while maintaining Tailscale connectivity.
 
+## Troubleshooting
+
+**Connection refused on MagicDNS URL:**
+```bash
+# Check container status
+docker compose ps
+
+# Check Tailscale logs
+docker compose logs tailscale
+
+# Check OpenClaw logs  
+docker compose logs gateway
+
+# Verify Tailscale connectivity
+docker compose exec tailscale tailscale status
+
+# Test local access
+docker compose exec gateway curl -I http://127.0.0.1:18789/healthz
+```
+
+**Common issues:**
+- MagicDNS not enabled in Tailscale admin console
+- HTTPS not enabled for your tailnet
+- Tailscale Serve configuration incomplete
+- Missing `TS_AUTHKEY` or invalid auth key
+- OpenClaw gateway failing to start (check logs)
+
 ## Upstream Documentation
 
 - [OpenClaw Website](https://openclaw.ai/)
@@ -80,6 +114,7 @@ This allows local network access while maintaining Tailscale connectivity.
 - [OpenClaw Tailscale Documentation](https://docs.openclaw.ai/gateway/tailscale)
 - [OpenClaw Docker Installation](https://docs.openclaw.ai/install/docker)
 - [OpenClaw Configuration Guide](https://docs.openclaw.ai/)
+- [Tailscale Serve Overview](https://tailscale.com/kb/1312/serve)
 
 ## Docker Image Note
 
