@@ -160,6 +160,7 @@ ScaleTail provides ready-to-run [Docker Compose](https://docs.docker.com/compose
 | 🛠️ Service                | 📝 Description                                                                                          | 🔗 Link                              |
 | ------------------------ | ------------------------------------------------------------------------------------------------------ | ----------------------------------- |
 | 🧰 **Arcane**             | A self-hosted Docker management UI for Compose stacks; this repo includes a Tailscale sidecar example. | [Details](services/arcane)          |
+| 🦞 **OpenClaw**           | An open-source personal AI assistant that automates tasks via chat apps with persistent memory.        | [Details](services/openclaw)        |
 | 🖥️ **Changedetection.io** | A tool for monitoring website changes.                                                                 | [Details](services/changedetection) |
 | 🛠️ **Coder**              | Self-hosted cloud dev environments with browser IDEs, Terraform-managed workspaces.                    | [Details](services/coder)           |
 | 🔧 **Cyberchef**          | A web app for encryption, encoding, compression, and data analysis.                                    | [Details](services/cyberchef)       |
