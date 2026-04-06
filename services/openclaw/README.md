@@ -78,7 +78,12 @@ This allows local network access while maintaining Tailscale connectivity.
 - [OpenClaw Website](https://openclaw.ai/)
 - [OpenClaw GitHub Repository](https://github.com/openclaw/openclaw)
 - [OpenClaw Tailscale Documentation](https://docs.openclaw.ai/gateway/tailscale)
+- [OpenClaw Docker Installation](https://docs.openclaw.ai/install/docker)
 - [OpenClaw Configuration Guide](https://docs.openclaw.ai/)
+
+## Docker Image Note
+
+The default image `ghcr.io/openclaw/openclaw:latest` is provided from the GitHub Container Registry. Alternative tags include: `main`, `latest`, or version tags (e.g., `2026.2.26`). For custom builds, follow the [OpenClaw Docker guide](https://docs.openclaw.ai/install/docker) to build locally as `openclaw:local`.
 
 ## Files to Check
 
